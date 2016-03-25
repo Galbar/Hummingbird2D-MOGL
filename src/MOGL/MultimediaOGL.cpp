@@ -3,7 +3,7 @@
 namespace mogl
 {
 MultimediaOGL::MultimediaOGL(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings):
-p_window(new sf::Window(mode, title, style, settings))
+p_window(mode, title, style, settings)
 {
     glewExperimental = GL_TRUE;
     glewInit();
@@ -12,9 +12,7 @@ p_window(new sf::Window(mode, title, style, settings))
 }
 
 MultimediaOGL::~MultimediaOGL()
-{
-    delete p_window;
-}
+{}
 
 void MultimediaOGL::gameStart()
 {
@@ -61,13 +59,16 @@ void MultimediaOGL::gameStart()
 
 void MultimediaOGL::preFixedUpdate()
 {
+    p_sound_manager.clearSounds();
+    p_input.update();
     sf::Event event;
-    while (p_window->pollEvent(event))
+    while (p_window.pollEvent(event))
     {
         if (event.type == sf::Event::Closed)
         {
             game().setRunning(false);
         }
+        p_input.handleEvent(event);
     }
 }
 
@@ -104,22 +105,22 @@ void MultimediaOGL::postUpdate()
         drawable->draw();
     }
     glBindVertexArray(0);
-    p_window->display();
+    p_window.display();
 }
 
 void MultimediaOGL::gameEnd()
 {
     p_shader_program_manager.free("_mogl_plain");
     p_shader_program_manager.free("_mogl_texture");
-    p_window->close();
+    p_window.close();
 }
 
-sf::Window* MultimediaOGL::window()
+sf::Window& MultimediaOGL::window()
 {
     return p_window;
 }
 
-const sf::Window* MultimediaOGL::window() const
+const sf::Window& MultimediaOGL::window() const
 {
     return p_window;
 }
@@ -181,5 +182,55 @@ ShaderProgramManager& MultimediaOGL::shaderPrograms()
 const ShaderProgramManager& MultimediaOGL::shaderPrograms() const
 {
     return p_shader_program_manager;
+}
+
+const InputHandler& MultimediaOGL::input() const
+{
+    return p_input;
+}
+
+InputHandler& MultimediaOGL::input()
+{
+    return p_input;
+}
+
+TextureManager& MultimediaOGL::textures()
+{
+    return p_texture_manager;
+}
+
+const TextureManager& MultimediaOGL::textures() const
+{
+    return p_texture_manager;
+}
+
+SpriteAnimationManager& MultimediaOGL::spriteAnimations()
+{
+    return p_sprite_animation_manager;
+}
+
+const SpriteAnimationManager& MultimediaOGL::spriteAnimations() const
+{
+    return p_sprite_animation_manager;
+}
+
+SoundManager& MultimediaOGL::sounds()
+{
+    return p_sound_manager;
+}
+
+const SoundManager& MultimediaOGL::sounds() const
+{
+    return p_sound_manager;
+}
+
+MusicManager& MultimediaOGL::music()
+{
+    return p_music_manager;
+}
+
+const MusicManager& MultimediaOGL::music() const
+{
+    return p_music_manager;
 }
 }
