@@ -84,8 +84,11 @@ void SoundManager::clearSounds()
 sf::SoundBuffer* SoundManager::loadResource(const std::string& name)
 {
     sf::SoundBuffer* resource = new sf::SoundBuffer();
-    if (not resource->loadFromFile(name))
-        return nullptr;
-    return resource;
+    if (resource->loadFromFile(name))
+    {
+        return resource;
+    }
+    delete resource;
+    return nullptr;
 }
 }
