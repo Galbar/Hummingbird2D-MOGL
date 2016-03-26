@@ -30,8 +30,8 @@ public:
     virtual void preFixedUpdate() override;
     virtual void postUpdate() override;
     virtual void gameEnd() override;
-    virtual sf::Window& window();
-    virtual const sf::Window& window() const;
+    virtual sf::Window* window();
+    virtual const sf::Window* window() const;
 
     virtual void addDrawable(Drawable* drawable);
     virtual void removeDrawable(Drawable* drawable);
@@ -53,18 +53,22 @@ public:
     const MusicManager& music() const;
 
 private:
-    sf::Window p_window;
+    sf::VideoMode p_mode;
+    sf::String p_title;
+    sf::Uint32 p_style;
+    sf::ContextSettings p_settings;
+    sf::Window* p_window;
     std::unordered_set<Drawable*> p_drawable_set;
     std::unordered_map<ShaderProgram*, unsigned int> p_shader_program_usage;
     std::unordered_map<Drawable*, const h2d::Kinematic*> p_drawable_kinematic;
     glm::mat4 p_projection;
     glm::mat4 p_view;
-    InputHandler p_input;
-    ShaderProgramManager p_shader_program_manager;
-    TextureManager p_texture_manager;
-    SpriteAnimationManager p_sprite_animation_manager;
-    MusicManager p_music_manager;
-    SoundManager p_sound_manager;
+    InputHandler* p_input;
+    ShaderProgramManager* p_shader_program_manager;
+    TextureManager* p_texture_manager;
+    SpriteAnimationManager* p_sprite_animation_manager;
+    MusicManager* p_music_manager;
+    SoundManager* p_sound_manager;
 };
 }
 #endif

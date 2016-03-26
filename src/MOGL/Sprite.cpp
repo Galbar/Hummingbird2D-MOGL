@@ -23,12 +23,12 @@ void Sprite::init()
     float x = p_width/2;
     float y = p_height/2;
     float vert[18] = {
-        -x , y , 0,
-        -x , -y  , 3,
-        x  , -y  , 2,
-        -x , y , 0,
-        x  , -y  , 2,
-        x  , y , 1
+        -x , y  , 0 ,
+        -x , -y , 3 ,
+        x  , -y , 2 ,
+        -x , y  , 0 ,
+        x  , -y , 2 ,
+        x  , y  , 1
     };
 
     glGenVertexArrays(1, &p_VAO);

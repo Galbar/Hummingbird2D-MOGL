@@ -3,19 +3,40 @@
 namespace mogl
 {
 MultimediaOGL::MultimediaOGL(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings):
-p_window(mode, title, style, settings)
-{
-    glewExperimental = GL_TRUE;
-    glewInit();
-    glEnable(GL_TEXTURE_2D);
-    glClearColor(0, 0, 0, 1);
-}
+p_mode(mode),
+p_title(title),
+p_style(style),
+p_settings(settings),
+p_window(nullptr),
+p_input(new InputHandler()),
+p_shader_program_manager(new ShaderProgramManager()),
+p_texture_manager(new TextureManager()),
+p_sprite_animation_manager(new SpriteAnimationManager()),
+p_music_manager(new MusicManager()),
+p_sound_manager(new SoundManager())
+{}
 
 MultimediaOGL::~MultimediaOGL()
-{}
+{
+    delete p_input;
+    delete p_shader_program_manager;
+    delete p_texture_manager;
+    delete p_sprite_animation_manager;
+    delete p_music_manager;
+    delete p_sound_manager;
+}
 
 void MultimediaOGL::gameStart()
 {
+    p_window = new sf::Window(p_mode, p_title, p_style, p_settings);
+    glewExperimental = GL_TRUE;
+    glewInit();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0, 0, 0, 1);
+
     Shader *v_shader, *f_shader;
     v_shader = new Shader();
     v_shader->loadFromSource(Shader::Type::VERTEX_SHADER,
@@ -31,7 +52,7 @@ void MultimediaOGL::gameStart()
     h2d_assert(f_shader->isCompiled(), "Error compiling plain.frag"
             << std::endl << f_shader->log());
 
-    p_shader_program_manager.load("_mogl_plain", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
+    p_shader_program_manager->load("_mogl_plain", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
 
     delete v_shader;
     delete f_shader;
@@ -51,7 +72,7 @@ void MultimediaOGL::gameStart()
     h2d_assert(f_shader->isCompiled(), "Error compiling plain.frag"
             << std::endl << f_shader->log());
 
-    p_shader_program_manager.load("_mogl_texture", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
+    p_shader_program_manager->load("_mogl_texture", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
 
     delete v_shader;
     delete f_shader;
@@ -59,16 +80,16 @@ void MultimediaOGL::gameStart()
 
 void MultimediaOGL::preFixedUpdate()
 {
-    p_sound_manager.clearSounds();
-    p_input.update();
+    p_sound_manager->clearSounds();
+    p_input->update();
     sf::Event event;
-    while (p_window.pollEvent(event))
+    while (p_window->pollEvent(event))
     {
         if (event.type == sf::Event::Closed)
         {
             game().setRunning(false);
         }
-        p_input.handleEvent(event);
+        p_input->handleEvent(event);
     }
 }
 
@@ -82,45 +103,67 @@ void MultimediaOGL::postUpdate()
         it.first->setUniformMatrix4f("view", p_view);
     }
 
+    std::multimap<double, std::pair<Drawable*, h2d::Transformation>> draw_order;
     for (Drawable* drawable : p_drawable_set)
     {
+        h2d::Transformation drawable_transform = drawable->transform();
+        const h2d::Kinematic* kinematic = p_drawable_kinematic[drawable];
+        const h2d::Transformation* actor_transform;
+        if (kinematic != nullptr)
+        {
+            actor_transform = new h2d::Transformation(kinematic->simulate(game().fixedUpdateLag()));
+        }
+        else
+        {
+            actor_transform = &drawable->actor().transform();
+        }
+        drawable_transform.x += actor_transform->x;
+        drawable_transform.y += actor_transform->y;
+        drawable_transform.z += actor_transform->z;
+        drawable_transform.rotation += actor_transform->rotation;
+        drawable_transform.scale_x *= actor_transform->scale_x;
+        drawable_transform.scale_y *= actor_transform->scale_y;
+
+        if (kinematic != nullptr)
+        {
+            delete actor_transform;
+        }
+        draw_order.insert(std::make_pair(drawable_transform.z, std::make_pair(drawable, drawable_transform)));
+    }
+
+    for (auto it : draw_order)
+    {
+        Drawable* drawable = it.second.first;
+        h2d::Transformation& transform = it.second.second;
         h2d_assert(drawable->shaderProgram() != nullptr, "Found a drawable without a shader program");
 
         glm::mat4 model(1.0);
-        model = glm::translate(model, glm::vec3(
-                    drawable->transform().x + drawable->actor().transform().x,
-                    drawable->transform().y + drawable->actor().transform().y,
-                    drawable->transform().z + drawable->actor().transform().z));
-        model = glm::rotate(model,
-                glm::radians(static_cast<float>(
-                        drawable->transform().rotation + drawable->actor().transform().rotation
-                        )),
-                glm::vec3(0., 0., 1.));
-        model = glm::scale(model, glm::vec3(
-                    drawable->transform().scale_x * drawable->actor().transform().scale_x,
-                    drawable->transform().scale_y * drawable->actor().transform().scale_y,
-                    1.));
+        model = glm::translate(model, glm::vec3(transform.x, transform.y, transform.z));
+        model = glm::rotate(model, glm::radians(static_cast<float>(transform.rotation)), glm::vec3(0., 0., 1.));
+        model = glm::scale(model, glm::vec3(transform.scale_x, transform.scale_y, 1.));
         drawable->shaderProgram()->use();
         drawable->shaderProgram()->setUniformMatrix4f("model", model);
         drawable->draw();
     }
     glBindVertexArray(0);
-    p_window.display();
+    p_window->display();
 }
 
 void MultimediaOGL::gameEnd()
 {
-    p_shader_program_manager.free("_mogl_plain");
-    p_shader_program_manager.free("_mogl_texture");
-    p_window.close();
+    p_shader_program_manager->free("_mogl_plain");
+    p_shader_program_manager->free("_mogl_texture");
+    p_window->close();
+    delete p_window;
+    p_window = nullptr;
 }
 
-sf::Window& MultimediaOGL::window()
+sf::Window* MultimediaOGL::window()
 {
     return p_window;
 }
 
-const sf::Window& MultimediaOGL::window() const
+const sf::Window* MultimediaOGL::window() const
 {
     return p_window;
 }
@@ -176,61 +219,61 @@ void MultimediaOGL::setView(const glm::mat4& view)
 
 ShaderProgramManager& MultimediaOGL::shaderPrograms()
 {
-    return p_shader_program_manager;
+    return *p_shader_program_manager;
 }
 
 const ShaderProgramManager& MultimediaOGL::shaderPrograms() const
 {
-    return p_shader_program_manager;
+    return *p_shader_program_manager;
 }
 
 const InputHandler& MultimediaOGL::input() const
 {
-    return p_input;
+    return *p_input;
 }
 
 InputHandler& MultimediaOGL::input()
 {
-    return p_input;
+    return *p_input;
 }
 
 TextureManager& MultimediaOGL::textures()
 {
-    return p_texture_manager;
+    return *p_texture_manager;
 }
 
 const TextureManager& MultimediaOGL::textures() const
 {
-    return p_texture_manager;
+    return *p_texture_manager;
 }
 
 SpriteAnimationManager& MultimediaOGL::spriteAnimations()
 {
-    return p_sprite_animation_manager;
+    return *p_sprite_animation_manager;
 }
 
 const SpriteAnimationManager& MultimediaOGL::spriteAnimations() const
 {
-    return p_sprite_animation_manager;
+    return *p_sprite_animation_manager;
 }
 
 SoundManager& MultimediaOGL::sounds()
 {
-    return p_sound_manager;
+    return *p_sound_manager;
 }
 
 const SoundManager& MultimediaOGL::sounds() const
 {
-    return p_sound_manager;
+    return *p_sound_manager;
 }
 
 MusicManager& MultimediaOGL::music()
 {
-    return p_music_manager;
+    return *p_music_manager;
 }
 
 const MusicManager& MultimediaOGL::music() const
 {
-    return p_music_manager;
+    return *p_music_manager;
 }
 }
