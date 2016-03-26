@@ -73,7 +73,7 @@ void SoundManager::clearSounds()
     {
         sf::Sound* sound = p_sounds[i].second;
         if (sound->getStatus() == sf::Sound::Stopped
-                and p_positions.find(p_sounds[i].first) != p_positions.end())
+                && p_positions.find(p_sounds[i].first) != p_positions.end())
         {
             p_free_sounds.push(i);
             p_positions.erase(p_sounds[i].first);
