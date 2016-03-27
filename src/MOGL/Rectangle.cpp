@@ -12,16 +12,13 @@ p_color(color)
 void Rectangle::init()
 {
     p_shader_program = actor().game().getPlugin<MultimediaOGL>()->shaderPrograms().get("_mogl_plain");
-
-    float x = p_width/2;
-    float y = p_height/2;
     float vert[12] = {
-        -x , -y  ,
-        -x , y   ,
-        x  , y   ,
-        -x , -y  ,
-        x  , y   ,
-        x  , -y
+        0.             , 0.       ,
+        p_width        , 0.       ,
+        p_width        , p_height ,
+        0.             , 0.       ,
+        p_width        , p_height ,
+        0.             , p_height
     };
 
     glGenVertexArrays(1, &p_VAO);

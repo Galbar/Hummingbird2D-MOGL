@@ -27,11 +27,15 @@ public:
     ShaderProgram* shaderProgram();
     virtual void draw() =0;
 
+    void setOrigin(const glm::vec3& origin);
+    const glm::vec3& getOrigin() const;
+
     static const char* behaviourName();
 
 private:
     bool p_is_enabled;
     h2d::Transformation p_transform;
+    glm::vec3 p_origin;
 
 protected:
     ShaderProgram* p_shader_program;

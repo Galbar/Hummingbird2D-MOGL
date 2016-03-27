@@ -97,7 +97,7 @@ ShaderProgram* ShaderProgram::setUniform4f(const std::string& uniform_name, floa
     return this;
 }
 
-ShaderProgram* ShaderProgram::setUniformMatrix4f(const std::string& uniform_name, glm::mat4& mat)
+ShaderProgram* ShaderProgram::setUniformMatrix4f(const std::string& uniform_name, const glm::mat4& mat)
 {
     GLint location = glGetUniformLocation(p_program_id, uniform_name.c_str());
 

@@ -16,6 +16,7 @@
 #include "InputHandler.hpp"
 #include "ShaderProgramManager.hpp"
 #include "Drawable.hpp"
+#include "Camera.hpp"
 
 namespace mogl
 {
@@ -36,8 +37,9 @@ public:
     virtual void addDrawable(Drawable* drawable);
     virtual void removeDrawable(Drawable* drawable);
 
-    virtual void setProjection(const glm::mat4& projection);
-    virtual void setView(const glm::mat4& view);
+    virtual void setCamera(const Camera& camera);
+    virtual const Camera& getCamera() const;
+    virtual Camera& getCamera();
 
     ShaderProgramManager& shaderPrograms();
     const ShaderProgramManager& shaderPrograms() const;
@@ -57,12 +59,11 @@ private:
     sf::String p_title;
     sf::Uint32 p_style;
     sf::ContextSettings p_settings;
+    Camera p_camera;
     sf::Window* p_window;
     std::unordered_set<Drawable*> p_drawable_set;
     std::unordered_map<ShaderProgram*, unsigned int> p_shader_program_usage;
     std::unordered_map<Drawable*, const h2d::Kinematic*> p_drawable_kinematic;
-    glm::mat4 p_projection;
-    glm::mat4 p_view;
     InputHandler* p_input;
     ShaderProgramManager* p_shader_program_manager;
     TextureManager* p_texture_manager;

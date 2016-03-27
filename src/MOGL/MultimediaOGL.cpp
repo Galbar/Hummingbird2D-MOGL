@@ -96,12 +96,25 @@ void MultimediaOGL::preFixedUpdate()
 void MultimediaOGL::postUpdate()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (auto it : p_shader_program_usage)
+    if (p_camera.projectionChanged())
     {
-        it.first->use();
-        it.first->setUniformMatrix4f("projection", p_projection);
-        it.first->setUniformMatrix4f("view", p_view);
+        for (auto it : p_shader_program_usage)
+        {
+            it.first->use();
+            it.first->setUniformMatrix4f("projection", p_camera.getProjection());
+        }
     }
+    if (p_camera.viewChanged())
+    {
+        for (auto it : p_shader_program_usage)
+        {
+            it.first->use();
+            it.first->setUniformMatrix4f("view", p_camera.getView());
+        }
+    }
+
+    glm::vec3 camera_normal = p_camera.getCenter() - p_camera.getPosition();
+    glm::vec4 camera_plane(camera_normal, -(glm::dot(camera_normal, p_camera.getPosition())));
 
     std::multimap<double, std::pair<Drawable*, h2d::Transformation>> draw_order;
     for (Drawable* drawable : p_drawable_set)
@@ -128,7 +141,17 @@ void MultimediaOGL::postUpdate()
         {
             delete actor_transform;
         }
-        draw_order.insert(std::make_pair(drawable_transform.z, std::make_pair(drawable, drawable_transform)));
+        draw_order.insert(
+                std::make_pair(
+                    -glm::dot(
+                        camera_plane,
+                        glm::vec4(
+                            drawable_transform.x,
+                            drawable_transform.y,
+                            drawable_transform.z,
+                            1.f)
+                        ),
+                    std::make_pair(drawable, drawable_transform)));
     }
 
     for (auto it : draw_order)
@@ -141,6 +164,7 @@ void MultimediaOGL::postUpdate()
         model = glm::translate(model, glm::vec3(transform.x, transform.y, transform.z));
         model = glm::rotate(model, glm::radians(static_cast<float>(transform.rotation)), glm::vec3(0., 0., 1.));
         model = glm::scale(model, glm::vec3(transform.scale_x, transform.scale_y, 1.));
+        model = glm::translate(model, -drawable->getOrigin());
         drawable->shaderProgram()->use();
         drawable->shaderProgram()->setUniformMatrix4f("model", model);
         drawable->draw();
@@ -207,14 +231,19 @@ void MultimediaOGL::removeDrawable(Drawable* drawable)
     }
 }
 
-void MultimediaOGL::setProjection(const glm::mat4& projection)
+void MultimediaOGL::setCamera(const Camera& camera)
 {
-    p_projection = projection;
+    p_camera = camera;
 }
 
-void MultimediaOGL::setView(const glm::mat4& view)
+const Camera& MultimediaOGL::getCamera() const
 {
-    p_view = view;
+    return p_camera;
+}
+
+Camera& MultimediaOGL::getCamera()
+{
+    return p_camera;
 }
 
 ShaderProgramManager& MultimediaOGL::shaderPrograms()

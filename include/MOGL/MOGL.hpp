@@ -1,6 +1,7 @@
 #ifndef MOGL_HPP
 #define MOGL_HPP
 #include "AnimatedSprite.hpp"
+#include "Camera.hpp"
 #include "Drawable.hpp"
 #include "glm.hpp"
 #include "InputHandler.hpp"

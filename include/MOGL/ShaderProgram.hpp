@@ -26,7 +26,7 @@ public:
     ShaderProgram* setUniform2f(const std::string& uniform_name, float v0, float v1);
     ShaderProgram* setUniform3f(const std::string& uniform_name, float v0, float v1, float v2);
     ShaderProgram* setUniform4f(const std::string& uniform_name, float v0, float v1, float v2, float v3);
-    ShaderProgram* setUniformMatrix4f(const std::string& uniform_name, glm::mat4& mat);
+    ShaderProgram* setUniformMatrix4f(const std::string& uniform_name, const glm::mat4& mat);
 
     bool isLinked();
     const std::string& log() const;

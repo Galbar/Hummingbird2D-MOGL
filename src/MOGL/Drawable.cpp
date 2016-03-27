@@ -5,6 +5,7 @@ namespace mogl
 {
 Drawable::Drawable():
 p_is_enabled(true),
+p_origin(0.0),
 p_shader_program(nullptr)
 {}
 
@@ -70,6 +71,16 @@ ShaderProgram* Drawable::shaderProgram()
 const ShaderProgram* Drawable::shaderProgram() const
 {
     return p_shader_program;
+}
+
+void Drawable::setOrigin(const glm::vec3& origin)
+{
+    p_origin = origin;
+}
+
+const glm::vec3& Drawable::getOrigin() const
+{
+    return p_origin;
 }
 
 const char* Drawable::behaviourName()
