@@ -119,6 +119,7 @@ void MultimediaOGL::postUpdate()
     std::multimap<double, std::pair<Drawable*, h2d::Transformation>> draw_order;
     for (Drawable* drawable : p_drawable_set)
     {
+        if (!drawable->actor().isActive()) continue;
         h2d::Transformation drawable_transform = drawable->transform();
         const h2d::Kinematic* kinematic = p_drawable_kinematic[drawable];
         const h2d::Transformation* actor_transform;
