@@ -42,6 +42,7 @@ void Sprite::init()
 
 void Sprite::onDestroy()
 {
+    Drawable::onDestroy();
     glDeleteBuffers(1, &p_VBO);
 }
 
@@ -94,7 +95,7 @@ void Sprite::draw()
     glDrawArrays(GL_TRIANGLES, 0, 6);
     sf::Texture::bind(NULL);
 }
-const char* Sprite::behaviourName()
+const char* Sprite::behaviorName()
 {
     return "mogl::Sprite";
 }

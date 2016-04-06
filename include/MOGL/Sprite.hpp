@@ -23,7 +23,7 @@ public:
 
     void draw() override;
 
-    static const char* behaviourName();
+    static const char* behaviorName();
 
 protected:
     GLuint p_VAO, p_VBO, p_position_loc, p_texture_coord_loc;

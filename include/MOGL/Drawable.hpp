@@ -32,7 +32,7 @@ public:
     void setOrigin(const glm::vec3& origin);
     const glm::vec3& getOrigin() const;
 
-    static const char* behaviourName();
+    static const char* behaviorName();
 
 private:
     bool p_is_enabled;

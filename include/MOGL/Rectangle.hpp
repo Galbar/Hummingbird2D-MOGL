@@ -19,7 +19,7 @@ public:
 
     void draw() override;
 
-    static const char* behaviourName();
+    static const char* behaviorName();
 
 private:
     GLuint p_VAO, p_VBO, p_position_loc;

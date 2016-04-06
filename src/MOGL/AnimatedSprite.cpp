@@ -108,7 +108,7 @@ bool AnimatedSprite::isLooping() const
     return p_loop;
 }
 
-const char* AnimatedSprite::behaviourName()
+const char* AnimatedSprite::behaviorName()
 {
     return "mogl::AnimatedSprite";
 }

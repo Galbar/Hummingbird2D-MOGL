@@ -33,6 +33,7 @@ void Rectangle::init()
 }
 void Rectangle::onDestroy()
 {
+    Drawable::onDestroy();
     glDeleteBuffers(1, &p_VBO);
 }
 
@@ -58,7 +59,7 @@ void Rectangle::draw()
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-const char* Rectangle::behaviourName()
+const char* Rectangle::behaviorName()
 {
     return "mogl::Rectangle";
 }

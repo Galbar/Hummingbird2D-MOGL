@@ -33,7 +33,7 @@ public:
 
     void draw() override;
 
-    static const char* behaviourName();
+    static const char* behaviorName();
 
 private:
     Status p_status;

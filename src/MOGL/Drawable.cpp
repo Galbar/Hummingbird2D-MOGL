@@ -93,7 +93,7 @@ const glm::vec3& Drawable::getOrigin() const
     return p_origin;
 }
 
-const char* Drawable::behaviourName()
+const char* Drawable::behaviorName()
 {
     return "mogl::Drawable";
 }
