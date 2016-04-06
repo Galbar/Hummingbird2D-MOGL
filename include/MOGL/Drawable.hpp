@@ -14,6 +14,8 @@ public:
     virtual ~Drawable();
 
     virtual void init() override;
+    virtual void onActivate() override;
+    virtual void onDeactivate() override;
     virtual void onDestroy() override;
 
     void enable();

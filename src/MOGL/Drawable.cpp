@@ -20,6 +20,16 @@ void Drawable::init()
     }
 }
 
+void Drawable::onActivate()
+{
+    enable();
+}
+
+void Drawable::onDeactivate()
+{
+    disable();
+}
+
 void Drawable::onDestroy()
 {
     disable();
