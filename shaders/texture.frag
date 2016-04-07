@@ -10,5 +10,9 @@ in vec2 frag_texture_coord;
 void main()
 {
     out_color = color * texture2D(tex, frag_texture_coord);
+    if (out_color.a == 0.0)
+    {
+        discard;
+    }
 }
 )"
