@@ -7,6 +7,7 @@ p_mode(mode),
 p_title(title),
 p_style(style),
 p_settings(settings),
+p_clear_color(sf::Color::Black),
 p_window(nullptr),
 p_input(new InputHandler()),
 p_shader_program_manager(new ShaderProgramManager()),
@@ -230,6 +231,21 @@ void MultimediaOGL::removeDrawable(Drawable* drawable)
         }
     }
 }
+
+void MultimediaOGL::setClearColor(const sf::Color& color)
+{
+    p_clear_color = color;
+    glClearColor(
+            static_cast<float>(color.r)/255.f,
+            static_cast<float>(color.g)/255.f,
+            static_cast<float>(color.b)/255.f,
+            1);
+}
+const sf::Color& MultimediaOGL::getClearColor() const
+{
+    return p_clear_color;
+}
+
 
 void MultimediaOGL::setCamera(const Camera& camera)
 {

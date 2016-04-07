@@ -3,7 +3,7 @@
 
 namespace mogl
 {
-AnimatedSprite::AnimatedSprite(int width, int height, const SpriteAnimation* animation):
+AnimatedSprite::AnimatedSprite(double width, double height, const SpriteAnimation* animation):
 Sprite(width, height, animation->texture),
 p_loop(true)
 {
@@ -17,14 +17,16 @@ void AnimatedSprite::setSpriteAnimation(const SpriteAnimation* animation)
     setTexture(animation->texture);
     p_time = h2d::Time::nanoseconds(0);
     p_frame_index = 0;
-    int top, left, idx, sheet_width;
-    sheet_width = p_animation->texture->getSize().x - p_animation->offset_x;
-    idx = p_animation->frame_order[p_frame_index];
-    left = idx * (p_animation->margin_x + p_animation->width);
-    top = p_animation->offset_y + (p_animation->margin_y + p_animation->height) * (left / sheet_width);
-    left = (left % sheet_width) + p_animation->offset_x;
 
-    setTextureRect(sf::IntRect(left, top, p_animation->width, p_animation->height));
+    int idx = p_animation->frame_order[p_frame_index];
+    int ts_width = (p_animation->texture->getSize().x - p_animation->offset_x) / p_animation->width;
+    sf::IntRect texrect(
+            p_animation->offset_x + (p_animation->margin_x + p_animation->width) * (idx % ts_width),
+            p_animation->offset_y + (p_animation->margin_y + p_animation->height) * (idx / ts_width),
+            p_animation->width,
+            p_animation->height);
+
+    setTextureRect(texrect);
 }
 
 const SpriteAnimation* AnimatedSprite::spriteAnimation() const
@@ -54,14 +56,16 @@ void AnimatedSprite::draw()
                 }
             }
         }
-        int top, left, idx, sheet_width;
-        sheet_width = p_animation->texture->getSize().x - p_animation->offset_x;
-        idx = p_animation->frame_order[p_frame_index];
-        left = idx * (p_animation->margin_x + p_animation->width);
-        top = p_animation->offset_y + (p_animation->margin_y + p_animation->height) * (left / sheet_width);
-        left = (left % sheet_width) + p_animation->offset_x;
 
-        setTextureRect(sf::IntRect(left, top, p_animation->width, p_animation->height));
+        int idx = p_animation->frame_order[p_frame_index];
+        int ts_width = (p_animation->texture->getSize().x - p_animation->offset_x) / p_animation->width;
+        sf::IntRect texrect(
+                p_animation->offset_x + (p_animation->margin_x + p_animation->width) * (idx % ts_width),
+                p_animation->offset_y + (p_animation->margin_y + p_animation->height) * (idx / ts_width),
+                p_animation->width,
+                p_animation->height);
+
+        setTextureRect(texrect);
     }
     Sprite::draw();
 }

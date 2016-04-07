@@ -37,6 +37,9 @@ public:
     virtual void addDrawable(Drawable* drawable);
     virtual void removeDrawable(Drawable* drawable);
 
+    virtual void setClearColor(const sf::Color& color);
+    virtual const sf::Color& getClearColor() const;
+
     virtual void setCamera(const Camera& camera);
     virtual const Camera& getCamera() const;
     virtual Camera& getCamera();
@@ -59,6 +62,7 @@ private:
     sf::String p_title;
     sf::Uint32 p_style;
     sf::ContextSettings p_settings;
+    sf::Color p_clear_color;
     Camera p_camera;
     sf::Window* p_window;
     std::unordered_set<Drawable*> p_drawable_set;
