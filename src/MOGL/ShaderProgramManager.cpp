@@ -14,7 +14,7 @@ ShaderProgram* ShaderProgramManager::loadResource(const ShaderProgramDef& defini
     {
         return program;
     }
-    h2d_log_d(program->log());
+    hum::log_d(program->log());
     delete program;
     return nullptr;
 }

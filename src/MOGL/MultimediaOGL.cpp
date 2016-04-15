@@ -2,12 +2,16 @@
 
 namespace mogl
 {
+void defaultSpaceTransform(hum::Transformation& r)
+{}
+
 MultimediaOGL::MultimediaOGL(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings):
 p_mode(mode),
 p_title(title),
 p_style(style),
 p_settings(settings),
 p_clear_color(sf::Color::Black),
+p_space_transform(defaultSpaceTransform),
 p_window(nullptr),
 p_input(new InputHandler()),
 p_shader_program_manager(new ShaderProgramManager()),
@@ -43,15 +47,13 @@ void MultimediaOGL::gameStart()
     v_shader->loadFromSource(Shader::Type::VERTEX_SHADER,
 #include "../../shaders/plain.vert"
     );
-    h2d_assert(v_shader->isCompiled(), "Error compiling plain.vert"
-            << std::endl << v_shader->log());
+    hum::assert_msg(v_shader->isCompiled(), "Error compiling plain.vert\n" + v_shader->log());
 
     f_shader = new Shader();
     f_shader->loadFromSource(Shader::Type::FRAGMENT_SHADER,
 #include "../../shaders/plain.frag"
     );
-    h2d_assert(f_shader->isCompiled(), "Error compiling plain.frag"
-            << std::endl << f_shader->log());
+    hum::assert_msg(f_shader->isCompiled(), "Error compiling plain.frag\n" + f_shader->log());
 
     p_shader_program_manager->load("_mogl_plain", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
 
@@ -62,16 +64,14 @@ void MultimediaOGL::gameStart()
     v_shader->loadFromSource(Shader::Type::VERTEX_SHADER,
 #include "../../shaders/texture.vert"
     );
-    h2d_assert(v_shader->isCompiled(), "Error compiling plain.vert"
-            << std::endl << v_shader->log());
+    hum::assert_msg(v_shader->isCompiled(), "Error compiling plain.vert\n" + v_shader->log());
 
 
     f_shader = new Shader();
     f_shader->loadFromSource(Shader::Type::FRAGMENT_SHADER,
 #include "../../shaders/texture.frag"
     );
-    h2d_assert(f_shader->isCompiled(), "Error compiling plain.frag"
-            << std::endl << f_shader->log());
+    hum::assert_msg(f_shader->isCompiled(), "Error compiling plain.frag\n" + f_shader->log());
 
     p_shader_program_manager->load("_mogl_texture", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
 
@@ -117,39 +117,37 @@ void MultimediaOGL::postUpdate()
     glm::vec3 camera_normal = p_camera.getCenter() - p_camera.getPosition();
     glm::vec4 camera_plane(camera_normal, -(glm::dot(camera_normal, p_camera.getPosition())));
 
-    std::multimap<double, std::pair<Drawable*, h2d::Transformation>> draw_order;
+    std::multimap<double, std::pair<Drawable*, hum::Transformation>> draw_order;
     for (Drawable* drawable : p_drawable_set)
     {
-        h2d::Transformation drawable_transform = drawable->transform();
-        const h2d::Kinematic* kinematic = p_drawable_kinematic[drawable];
-        const h2d::Transformation* actor_transform;
+        hum::Transformation drawable_transform = drawable->transform();
+        const hum::Kinematic* kinematic = p_drawable_kinematic[drawable];
+        const hum::Transformation* actor_transform;
         if (kinematic != nullptr)
         {
-            actor_transform = new h2d::Transformation(kinematic->simulate(game().fixedUpdateLag()));
+            actor_transform = new hum::Transformation(kinematic->simulate(game().fixedUpdateLag()));
         }
         else
         {
             actor_transform = &drawable->actor().transform();
         }
-        drawable_transform.x += actor_transform->x;
-        drawable_transform.y += actor_transform->y;
-        drawable_transform.z += actor_transform->z;
-        drawable_transform.rotation += actor_transform->rotation;
-        drawable_transform.scale_x *= actor_transform->scale_x;
-        drawable_transform.scale_y *= actor_transform->scale_y;
+        drawable_transform = drawable_transform.transform(*actor_transform);
 
         if (kinematic != nullptr)
         {
             delete actor_transform;
         }
+
+        p_space_transform(drawable_transform);
+
         draw_order.insert(
                 std::make_pair(
                     -glm::dot(
                         camera_plane,
                         glm::vec4(
-                            drawable_transform.x,
-                            drawable_transform.y,
-                            drawable_transform.z,
+                            drawable_transform.position.x,
+                            drawable_transform.position.y,
+                            drawable_transform.position.z,
                             1.f)
                         ),
                     std::make_pair(drawable, drawable_transform)));
@@ -158,14 +156,17 @@ void MultimediaOGL::postUpdate()
     for (auto it : draw_order)
     {
         Drawable* drawable = it.second.first;
-        h2d::Transformation& transform = it.second.second;
-        h2d_assert(drawable->shaderProgram() != nullptr, "Found a drawable without a shader program");
+        hum::Transformation& transform = it.second.second;
+        hum::assert_msg(drawable->shaderProgram() != nullptr, "Found a drawable without a shader program");
 
         glm::mat4 model(1.0);
-        model = glm::translate(model, glm::vec3(transform.x, transform.y, transform.z));
-        model = glm::rotate(model, glm::radians(static_cast<float>(transform.rotation)), glm::vec3(0., 0., 1.));
-        model = glm::scale(model, glm::vec3(transform.scale_x, transform.scale_y, 1.));
-        model = glm::translate(model, -drawable->getOrigin());
+        model = glm::translate(model, glm::vec3(transform.position.x, transform.position.y, transform.position.z));
+        model = glm::rotate(model, glm::radians(static_cast<float>(transform.rotation.x)), glm::vec3(1., 0., 0.));
+        model = glm::rotate(model, glm::radians(static_cast<float>(transform.rotation.y)), glm::vec3(0., 1., 0.));
+        model = glm::rotate(model, glm::radians(static_cast<float>(transform.rotation.z)), glm::vec3(0., 0., 1.));
+        model = glm::scale(model, glm::vec3(transform.scale.x, transform.scale.y, transform.scale.z));
+        glm::vec3 origin(drawable->getOrigin().x, drawable->getOrigin().y, drawable->getOrigin().z);
+        model = glm::translate(model, -origin);
         drawable->shaderProgram()->use();
         drawable->shaderProgram()->setUniformMatrix4f("model", model);
         drawable->draw();
@@ -198,9 +199,9 @@ void MultimediaOGL::addDrawable(Drawable* drawable)
     p_drawable_set.insert(drawable);
     try
     {
-        p_drawable_kinematic[drawable] = drawable->actor().getBehavior<h2d::Kinematic>();
+        p_drawable_kinematic[drawable] = drawable->actor().getBehavior<hum::Kinematic>();
     }
-    catch (h2d::exception::BehaviorNotFound e)
+    catch (hum::exception::BehaviorNotFound e)
     {
         p_drawable_kinematic[drawable] = nullptr;
     }
@@ -260,6 +261,11 @@ const Camera& MultimediaOGL::getCamera() const
 Camera& MultimediaOGL::getCamera()
 {
     return p_camera;
+}
+
+void MultimediaOGL::setDrawSpaceTransform(const SpaceTransformation& space_transform)
+{
+    p_space_transform = space_transform;
 }
 
 ShaderProgramManager& MultimediaOGL::shaderPrograms()

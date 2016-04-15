@@ -4,7 +4,7 @@ CFLAGS := -std=c++11 -Wall -fpic -O3
 ODIR   := obj
 LDIR   := lib
 SDIR   := src/MOGL
-INC    := -Iinclude/MOGL -I../Hum2D/include -I../glm
+INC    := -Iinclude/MOGL -I../hummingbird/include -I../glm
 
 SOURCES = $(shell find ./$(SDIR) -name '*.cpp')
 OBJS = $(patsubst $(SDIR)/%,$(ODIR)/%,$(SOURCES:./%.cpp=%.o))

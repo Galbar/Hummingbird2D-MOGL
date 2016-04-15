@@ -5,13 +5,13 @@
 #include <queue>
 #include <unordered_map>
 #include <SFML/Audio.hpp>
-#include "Hum2D/ResourceManager.hpp"
+#include "hummingbird/ResourceManager.hpp"
 
 namespace mogl
 {
 typedef unsigned int SoundId;
 typedef std::pair<SoundId, sf::Sound*> Sound_t;
-class SoundManager : public h2d::ResourceManager<sf::SoundBuffer>
+class SoundManager : public hum::ResourceManager<sf::SoundBuffer>
 {
 public:
     SoundManager();

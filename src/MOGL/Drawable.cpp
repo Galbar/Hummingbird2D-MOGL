@@ -58,12 +58,12 @@ bool Drawable::isEnabled() const
     return p_is_enabled;
 }
 
-h2d::Transformation& Drawable::transform()
+hum::Transformation& Drawable::transform()
 {
     return p_transform;
 }
 
-const h2d::Transformation& Drawable::transform() const
+const hum::Transformation& Drawable::transform() const
 {
     return p_transform;
 }
@@ -83,12 +83,12 @@ const ShaderProgram* Drawable::shaderProgram() const
     return p_shader_program;
 }
 
-void Drawable::setOrigin(const glm::vec3& origin)
+void Drawable::setOrigin(const hum::Vector3f& origin)
 {
     p_origin = origin;
 }
 
-const glm::vec3& Drawable::getOrigin() const
+const hum::Vector3f& Drawable::getOrigin() const
 {
     return p_origin;
 }

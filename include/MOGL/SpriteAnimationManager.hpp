@@ -3,13 +3,13 @@
 #include <vector>
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "Hum2D/Time.hpp"
-#include "Hum2D/ResourceManager.hpp"
+#include "hummingbird/Time.hpp"
+#include "hummingbird/ResourceManager.hpp"
 #include "AnimatedSprite.hpp"
 
 namespace mogl
 {
-class SpriteAnimationManager : public h2d::ResourceManager<SpriteAnimation, std::string, SpriteAnimation>
+class SpriteAnimationManager : public hum::ResourceManager<SpriteAnimation, std::string, SpriteAnimation>
 {
     SpriteAnimation* loadResource(const SpriteAnimation& animation) override;
 };

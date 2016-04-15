@@ -1,13 +1,13 @@
 #ifndef MOGL_DRAWABLE_HPP
 #define MOGL_DRAWABLE_HPP
 
-#include "Hum2D/Hum2D.hpp"
+#include "hummingbird/hum.hpp"
 #include "ShaderProgram.hpp"
 #include <SFML/OpenGL.hpp>
 
 namespace mogl
 {
-class Drawable : public h2d::Behavior
+class Drawable : public hum::Behavior
 {
 public:
     Drawable();
@@ -22,22 +22,22 @@ public:
     void disable();
     bool isEnabled() const;
 
-    h2d::Transformation& transform();
-    const h2d::Transformation& transform() const;
+    hum::Transformation& transform();
+    const hum::Transformation& transform() const;
     void setShaderProgram(ShaderProgram* shader_program);
     const ShaderProgram* shaderProgram() const;
     ShaderProgram* shaderProgram();
     virtual void draw() =0;
 
-    void setOrigin(const glm::vec3& origin);
-    const glm::vec3& getOrigin() const;
+    void setOrigin(const hum::Vector3f& origin);
+    const hum::Vector3f& getOrigin() const;
 
     static const char* behaviorName();
 
 private:
     bool p_is_enabled;
-    h2d::Transformation p_transform;
-    glm::vec3 p_origin;
+    hum::Transformation p_transform;
+    hum::Vector3f p_origin;
 
 protected:
     ShaderProgram* p_shader_program;

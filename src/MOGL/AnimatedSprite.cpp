@@ -1,4 +1,4 @@
-#include "Hum2D/Log.hpp"
+#include "hummingbird/Log.hpp"
 #include "AnimatedSprite.hpp"
 
 namespace mogl
@@ -15,7 +15,7 @@ void AnimatedSprite::setSpriteAnimation(const SpriteAnimation* animation)
 {
     p_animation = animation;
     setTexture(animation->texture);
-    p_time = h2d::Time::nanoseconds(0);
+    p_time = hum::Time::nanoseconds(0);
     p_frame_index = 0;
 
     int idx = p_animation->frame_order[p_frame_index];

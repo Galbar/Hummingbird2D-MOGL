@@ -1,6 +1,6 @@
 #ifndef MOGL_ANIMATED_SPRITE_HPP
 #define MOGL_ANIMATED_SPRITE_HPP
-#include "Hum2D/Hum2D.hpp"
+#include "hummingbird/hum.hpp"
 #include "Sprite.hpp"
 
 namespace mogl
@@ -10,7 +10,7 @@ struct SpriteAnimation
     sf::Texture* texture;
     int offset_x, offset_y, margin_x, margin_y, width, height;
     std::vector<unsigned int> frame_order;
-    std::vector<h2d::Time> frame_time;
+    std::vector<hum::Time> frame_time;
 };
 
 class AnimatedSprite : public Sprite
@@ -40,7 +40,7 @@ private:
     bool p_loop;
     unsigned int p_frame_index;
     const SpriteAnimation* p_animation;
-    h2d::Time p_time;
+    hum::Time p_time;
 };
 }
 #endif
