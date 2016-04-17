@@ -35,6 +35,7 @@ void Rectangle::onDestroy()
 {
     Drawable::onDestroy();
     glDeleteBuffers(1, &p_VBO);
+    glDeleteVertexArrays(1, &p_VAO);
 }
 
 void Rectangle::setColor(const sf::Color& color)

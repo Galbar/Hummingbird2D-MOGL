@@ -44,6 +44,7 @@ void Sprite::onDestroy()
 {
     Drawable::onDestroy();
     glDeleteBuffers(1, &p_VBO);
+    glDeleteVertexArrays(1, &p_VAO);
 }
 
 void Sprite::setTexture(const sf::Texture* texture)

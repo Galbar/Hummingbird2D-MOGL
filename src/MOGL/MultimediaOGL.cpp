@@ -19,7 +19,15 @@ p_texture_manager(new TextureManager()),
 p_sprite_animation_manager(new SpriteAnimationManager()),
 p_music_manager(new MusicManager()),
 p_sound_manager(new SoundManager())
-{}
+{
+    glewExperimental = GL_TRUE;
+    glewInit();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0, 0, 0, 1);
+}
 
 MultimediaOGL::~MultimediaOGL()
 {
@@ -34,13 +42,6 @@ MultimediaOGL::~MultimediaOGL()
 void MultimediaOGL::gameStart()
 {
     p_window = new sf::Window(p_mode, p_title, p_style, p_settings);
-    glewExperimental = GL_TRUE;
-    glewInit();
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(0, 0, 0, 1);
 
     Shader *v_shader, *f_shader;
     v_shader = new Shader();

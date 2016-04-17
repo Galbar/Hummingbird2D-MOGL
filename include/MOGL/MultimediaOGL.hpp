@@ -70,6 +70,7 @@ private:
     sf::Color p_clear_color;
     Camera p_camera;
     SpaceTransformation p_space_transform;
+    sf::Context p_context;
     sf::Window* p_window;
     std::unordered_set<Drawable*> p_drawable_set;
     std::unordered_map<ShaderProgram*, unsigned int> p_shader_program_usage;

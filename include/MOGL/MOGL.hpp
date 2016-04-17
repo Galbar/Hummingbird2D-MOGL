@@ -5,6 +5,8 @@
 #include "Drawable.hpp"
 #include "glm.hpp"
 #include "InputHandler.hpp"
+#include "Mesh.hpp"
+#include "Model.hpp"
 #include "MultimediaOGL.hpp"
 #include "MusicManager.hpp"
 #include "Rectangle.hpp"
