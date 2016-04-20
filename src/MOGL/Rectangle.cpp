@@ -11,7 +11,6 @@ p_color(color)
 
 void Rectangle::init()
 {
-    p_shader_program = actor().game().getPlugin<MultimediaOGL>()->shaderPrograms().get("_mogl_plain");
     float vert[12] = {
         0.             , 0.       ,
         p_width        , 0.       ,
@@ -26,9 +25,9 @@ void Rectangle::init()
     glGenBuffers(1, &p_VBO);
     glBindBuffer(GL_ARRAY_BUFFER, p_VBO);
     glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), vert, GL_STATIC_DRAW);
-    p_position_loc = p_shader_program->bindVertexAttribute("position", 2, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    setShaderProgram(actor().game().getPlugin<MultimediaOGL>()->shaderPrograms().get("_mogl_plain"));
     Drawable::init();
 }
 void Rectangle::onDestroy()
@@ -36,6 +35,16 @@ void Rectangle::onDestroy()
     Drawable::onDestroy();
     glDeleteBuffers(1, &p_VBO);
     glDeleteVertexArrays(1, &p_VAO);
+}
+
+void Rectangle::setShaderProgram(ShaderProgram* shader_program)
+{
+    Drawable::setShaderProgram(shader_program);
+    glBindVertexArray(p_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, p_VBO);
+    p_position_loc = shaderProgram()->bindVertexAttribute("position", 2, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void Rectangle::setColor(const sf::Color& color)
@@ -51,7 +60,7 @@ const sf::Color& Rectangle::getColor() const
 void Rectangle::draw()
 {
     glBindVertexArray(p_VAO);
-    p_shader_program->setUniform4f("color",
+    shaderProgram()->setUniform4f("color",
             static_cast<float>(p_color.r)/255.0f,
             static_cast<float>(p_color.g)/255.0f,
             static_cast<float>(p_color.b)/255.0f,

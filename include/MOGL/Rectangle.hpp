@@ -14,6 +14,8 @@ public:
     void init() override;
     void onDestroy() override;
 
+    void setShaderProgram(ShaderProgram* shader_program) override;
+
     void setColor(const sf::Color& color);
     const sf::Color& getColor() const;
 

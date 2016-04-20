@@ -1,8 +1,8 @@
-#include "Mesh.hpp"
+#include "VertexArray.hpp"
 
 namespace mogl
 {
-Mesh::Mesh():
+VertexArray::VertexArray():
 p_VAO(0),
 p_VBO(0),
 p_num_vertices(0),
@@ -10,7 +10,7 @@ p_num_faces(0),
 p_bb(std::make_pair(hum::Vector3f(0.f), hum::Vector3f(0.f)))
 {}
 
-Mesh::~Mesh()
+VertexArray::~VertexArray()
 {
     if (p_VBO != 0)
     {
@@ -22,22 +22,22 @@ Mesh::~Mesh()
     }
 }
 
-unsigned int Mesh::getNumFaces() const
+unsigned int VertexArray::getNumFaces() const
 {
     return p_num_faces;
 }
 
-unsigned int Mesh::getNumVertices() const
+unsigned int VertexArray::getNumVertices() const
 {
     return p_num_vertices;
 }
 
-const std::pair<hum::Vector3f, hum::Vector3f>& Mesh::getBoundingBox() const
+const std::pair<hum::Vector3f, hum::Vector3f>& VertexArray::getBoundingBox() const
 {
     return p_bb;
 }
 
-bool Mesh::loadFromFile(const std::string& filename)
+bool VertexArray::loadFromFile(const std::string& filename)
 {
     Model model;
     if (model.loadFromFile(filename))
@@ -47,13 +47,13 @@ bool Mesh::loadFromFile(const std::string& filename)
     return false;
 }
 
-bool Mesh::loadFromModel(const Model& model)
+bool VertexArray::loadFromModel(const Model& model)
 {
     // Each face has (3 vertices + 3 normals) * 3 floats + (3 uv_coords) * 2 floats
     int N = model.getFaces().size() * 24;
     if (N == 0)
     {
-        hum::log("Loading Mesh from empty model, not doing it.");
+        hum::log("Loading VertexArray from empty model, not doing it.");
         return false;
     }
     float info[N];
@@ -102,7 +102,7 @@ bool Mesh::loadFromModel(const Model& model)
     return true;
 }
 
-unsigned int Mesh::getNativeHandle() const
+unsigned int VertexArray::getNativeHandle() const
 {
     return p_VAO;
 }

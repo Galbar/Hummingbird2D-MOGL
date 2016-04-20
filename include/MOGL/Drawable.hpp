@@ -24,7 +24,7 @@ public:
 
     hum::Transformation& transform();
     const hum::Transformation& transform() const;
-    void setShaderProgram(ShaderProgram* shader_program);
+    virtual void setShaderProgram(ShaderProgram* shader_program);
     const ShaderProgram* shaderProgram() const;
     ShaderProgram* shaderProgram();
     virtual void draw() =0;
@@ -38,8 +38,6 @@ private:
     bool p_is_enabled;
     hum::Transformation p_transform;
     hum::Vector3f p_origin;
-
-protected:
     ShaderProgram* p_shader_program;
 };
 } /* mogl */

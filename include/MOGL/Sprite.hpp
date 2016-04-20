@@ -14,6 +14,8 @@ public:
     void init() override;
     void onDestroy() override;
 
+    void setShaderProgram(ShaderProgram* shader_program) override;
+
     void setTexture(const sf::Texture* texture);
     const sf::Texture* getTexture() const;
     void setTextureRect(const sf::IntRect& rect);
