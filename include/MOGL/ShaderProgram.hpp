@@ -15,7 +15,10 @@ public:
     ShaderProgram();
     ~ShaderProgram();
 
+    GLuint getProgramId() const;
+
     ShaderProgram* addShader(const Shader& shader);
+    ShaderProgram* bindAttribLocation(GLuint index, const std::string &name);
     ShaderProgram* bindFragmentOutput(const std::string& output_name);
     GLint bindVertexAttribute(const std::string& attrib_name, GLint size, GLsizei stride, GLvoid* first_pointer);
     ShaderProgram* link();

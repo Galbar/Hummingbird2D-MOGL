@@ -13,15 +13,24 @@ ShaderProgram::~ShaderProgram()
     glDeleteProgram(p_program_id);
 }
 
+GLuint ShaderProgram::getProgramId() const {
+    return p_program_id;
+}
+
 ShaderProgram* ShaderProgram::addShader(const Shader& shader)
 {
     glAttachShader(p_program_id, shader.getId());
     return this;
 }
 
+ShaderProgram* ShaderProgram::bindAttribLocation(GLuint index, const std::string &name) {
+    glBindAttribLocation(p_program_id, index, name.c_str());
+    return this;
+}
+
 ShaderProgram* ShaderProgram::bindFragmentOutput(const std::string& output_name)
 {
-    glBindAttribLocation(p_program_id, 0, output_name.c_str());
+    glBindFragDataLocation(p_program_id, 0, output_name.c_str());
     return this;
 }
 
