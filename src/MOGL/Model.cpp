@@ -70,6 +70,12 @@ void Model::getBoundingBox(hum::Vector3f& min, hum::Vector3f& max) const
     }
 }
 
+bool Model::loadFromString(const std::string& source)
+{
+    std::stringstream ss(source);
+    return loadFromStream(ss);
+}
+
 bool Model::loadFromFile(const std::string& filename)
 {
     std::ifstream file;
@@ -79,7 +85,13 @@ bool Model::loadFromFile(const std::string& filename)
         hum::log("Could not open file '" + filename + "'.");
         return false;
     }
+    bool success = loadFromStream(file);
+    file.close();
+    return success;
+}
 
+bool Model::loadFromStream(std::istream& stream)
+{
     std::regex re_vert("v (-?\\d+(?:\\.\\d+|)) (-?\\d+(?:\\.\\d+|)) (-?\\d+(?:\\.\\d+|))(?: (-?\\d+(?:\\.\\d+|)))?");
     std::regex re_uv("vt (-?\\d+(?:\\.\\d+|)) (-?\\d+(?:\\.\\d+|))(?: (-?\\d+(?:\\.\\d+|)))?");
     std::regex re_normal("vn (-?\\d+(?:\\.\\d+|)) (-?\\d+(?:\\.\\d+|)) (-?\\d+(?:\\.\\d+|))");
@@ -88,7 +100,7 @@ bool Model::loadFromFile(const std::string& filename)
     std::smatch sm;
     std::string line;
     bool success = true;
-    while (std::getline(file, line))
+    while (std::getline(stream, line))
     {
         if (line.size() == 0 || line[0] == '#') continue;
         if (std::regex_match(line, sm, re_vert))
@@ -154,7 +166,7 @@ bool Model::loadFromFile(const std::string& filename)
         }
         else
         {
-            hum::log("Model file format unsupported. Not loading.");
+            hum::log("Model format unsupported. Not loading.");
             p_vertices.clear();
             p_faces.clear();
             p_normals.clear();
@@ -163,8 +175,6 @@ bool Model::loadFromFile(const std::string& filename)
             break;
         }
     }
-    file.close();
-
     return success;
 }
 } /* mogl */

@@ -42,7 +42,6 @@ MultimediaOGL::~MultimediaOGL()
 void MultimediaOGL::gameStart()
 {
     p_window = new sf::Window(p_mode, p_title, p_style, p_settings);
-
     Shader *v_shader, *f_shader;
     v_shader = new Shader();
     v_shader->loadFromSource(Shader::Type::VERTEX_SHADER,

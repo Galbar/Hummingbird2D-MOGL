@@ -12,6 +12,9 @@ namespace mogl
 class VertexArray
 {
 public:
+    struct VertexArray_t {
+        unsigned int vao, vbo;
+    };
     VertexArray();
     virtual ~VertexArray();
 
@@ -22,7 +25,7 @@ public:
     bool loadFromFile(const std::string& filename);
     bool loadFromModel(const Model& model);
 
-    unsigned int getNativeHandle() const;
+    VertexArray_t getNativeHandles() const;
 
 private:
     GLuint p_VAO, p_VBO;

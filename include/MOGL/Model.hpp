@@ -2,7 +2,9 @@
 #define MOGL_MODEL_HPP
 #include <vector>
 #include <string>
+#include <istream>
 #include <fstream>
+#include <sstream>
 #include <regex>
 #include "hummingbird/hum.hpp"
 
@@ -30,6 +32,8 @@ public:
 
     void getBoundingBox(hum::Vector3f& min, hum::Vector3f& max) const;
 
+    bool loadFromString(const std::string& source);
+    bool loadFromStream(std::istream& stream);
     bool loadFromFile(const std::string& filename);
 
 private:

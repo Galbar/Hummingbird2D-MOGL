@@ -17,4 +17,5 @@
 #include "Sprite.hpp"
 #include "SpriteAnimationManager.hpp"
 #include "TextureManager.hpp"
+#include "VertexArray.hpp"
 #endif /* ifndef MOGL_HPP */

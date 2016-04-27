@@ -91,6 +91,11 @@ bool VertexArray::loadFromModel(const Model& model)
         }
     }
 
+    p_num_faces = model.getFaces().size();
+    p_num_vertices = model.getVertices().size();
+
+    model.getBoundingBox(p_bb.first, p_bb.second);
+
     glGenVertexArrays(1, &p_VAO);
     glBindVertexArray(p_VAO);
     glGenBuffers(1, &p_VBO);
@@ -102,8 +107,8 @@ bool VertexArray::loadFromModel(const Model& model)
     return true;
 }
 
-unsigned int VertexArray::getNativeHandle() const
+VertexArray::VertexArray_t VertexArray::getNativeHandles() const
 {
-    return p_VAO;
+    return VertexArray_t{p_VAO, p_VBO};
 }
 } /* mogl */
