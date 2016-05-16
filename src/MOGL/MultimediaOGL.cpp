@@ -118,7 +118,7 @@ void MultimediaOGL::postUpdate()
     glm::vec3 camera_normal = p_camera.getCenter() - p_camera.getPosition();
     glm::vec4 camera_plane(camera_normal, -(glm::dot(camera_normal, p_camera.getPosition())));
 
-    std::multimap<double, std::pair<Drawable*, hum::Transformation>> draw_order;
+    std::vector<DrawOrder_t> draw_order;
     for (Drawable* drawable : p_drawable_set)
     {
         hum::Transformation drawable_transform = drawable->transform();
@@ -141,23 +141,27 @@ void MultimediaOGL::postUpdate()
 
         p_space_transform(drawable_transform);
 
-        draw_order.insert(
-                std::make_pair(
-                    -glm::dot(
-                        camera_plane,
-                        glm::vec4(
-                            drawable_transform.position.x,
-                            drawable_transform.position.y,
-                            drawable_transform.position.z,
-                            1.f)
-                        ),
-                    std::make_pair(drawable, drawable_transform)));
+        double distance_from_camera = glm::dot(
+                camera_plane,
+                glm::vec4(
+                    drawable_transform.position.x,
+                    drawable_transform.position.y,
+                    drawable_transform.position.z,
+                    1.f)
+                );
+        if (distance_from_camera <= p_camera.getZFar() && distance_from_camera >= p_camera.getZNear())
+        {
+            draw_order.push_back(DrawOrder_t{distance_from_camera, drawable_transform, drawable});
+        }
     }
 
-    for (auto it : draw_order)
+    std::sort(draw_order.begin(), draw_order.end(), [](const DrawOrder_t& left, const DrawOrder_t& right) { return left.order > right.order; });
+
+    for (DrawOrder_t& value : draw_order)
     {
-        Drawable* drawable = it.second.first;
-        hum::Transformation& transform = it.second.second;
+        Drawable* drawable = value.drawable;
+        hum::assert_msg(drawable != nullptr, "Found a drawable nullptr");
+        hum::Transformation& transform = value.transform;
         hum::assert_msg(drawable->shaderProgram() != nullptr, "Found a drawable without a shader program");
 
         glm::mat4 model(1.0);

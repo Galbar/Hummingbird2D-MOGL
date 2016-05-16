@@ -63,6 +63,12 @@ public:
     const MusicManager& music() const;
 
 private:
+    struct DrawOrder_t {
+        double order;
+        hum::Transformation transform;
+        Drawable* drawable;
+    };
+
     sf::VideoMode p_mode;
     sf::String p_title;
     sf::Uint32 p_style;
