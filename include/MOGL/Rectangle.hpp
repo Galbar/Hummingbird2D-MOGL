@@ -9,7 +9,7 @@ namespace mogl
 class Rectangle : public Drawable
 {
 public:
-    Rectangle (double width, double height, const sf::Color&);
+    Rectangle (const sf::Color&);
 
     void init() override;
     void onDestroy() override;
@@ -24,8 +24,8 @@ public:
     static const char* behaviorName();
 
 private:
-    GLuint p_VAO, p_VBO, p_position_loc;
-    float p_width, p_height;
+    static GLuint s_VAO, s_VBO;
+    GLuint p_position_loc;
     sf::Color p_color;
 };
 }

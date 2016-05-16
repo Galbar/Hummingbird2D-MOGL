@@ -3,9 +3,10 @@
 
 namespace mogl
 {
-Sprite::Sprite(double width, double height, const sf::Texture* texture, const sf::IntRect& rect):
-p_width(width),
-p_height(height),
+GLuint Sprite::s_VAO = 0;
+GLuint Sprite::s_VBO = 0;
+
+Sprite::Sprite(const sf::Texture* texture, const sf::IntRect& rect):
 p_color(sf::Color::White),
 p_texture(texture),
 p_rect(rect)
@@ -18,22 +19,23 @@ p_rect(rect)
 
 void Sprite::init()
 {
-    float vert[18] = {
-        0.             , 0.        , 0 ,
-        p_width        , 0.        , 1 ,
-        p_width        , p_height  , 2 ,
-        0.             , 0.        , 0 ,
-        p_width        , p_height  , 2 ,
-        0.             , p_height  , 3
-    };
+    if (s_VAO == 0)
+    {
+        float vert[18] = { 0. , 0. , 0 ,
+                           1. , 0. , 1 ,
+                           1. , 1. , 2 ,
+                           0. , 0. , 0 ,
+                           1. , 1. , 2 ,
+                           0. , 1. , 3 };
 
-    glGenVertexArrays(1, &p_VAO);
-    glBindVertexArray(p_VAO);
-    glGenBuffers(1, &p_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, p_VBO);
-    glBufferData(GL_ARRAY_BUFFER, 18 * sizeof(float), vert, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+        glGenVertexArrays(1, &s_VAO);
+        glBindVertexArray(s_VAO);
+        glGenBuffers(1, &s_VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, s_VBO);
+        glBufferData(GL_ARRAY_BUFFER, 18 * sizeof(float), vert, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
     setShaderProgram(actor().game().getPlugin<MultimediaOGL>()->shaderPrograms().get("_mogl_texture"));
     Drawable::init();
 }
@@ -41,15 +43,13 @@ void Sprite::init()
 void Sprite::onDestroy()
 {
     Drawable::onDestroy();
-    glDeleteBuffers(1, &p_VBO);
-    glDeleteVertexArrays(1, &p_VAO);
 }
 
 void Sprite::setShaderProgram(ShaderProgram* shader_program)
 {
     Drawable::setShaderProgram(shader_program);
-    glBindVertexArray(p_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, p_VBO);
+    glBindVertexArray(s_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, s_VBO);
     p_position_loc = shaderProgram()->bindVertexAttribute("position", 2, 3*sizeof(float), 0);
     p_texture_coord_loc = shaderProgram()->bindVertexAttribute("point_id", 1, 3*sizeof(float), (void *)(2 * sizeof(float)));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -89,7 +89,7 @@ const sf::Color& Sprite::getColor() const
 void Sprite::draw()
 {
     sf::Texture::bind(p_texture, sf::Texture::Normalized);
-    glBindVertexArray(p_VAO);
+    glBindVertexArray(s_VAO);
     shaderProgram()->setUniform4f("texture_coords",
             static_cast<float>(p_rect.left)/static_cast<float>(p_texture->getSize().x),
             static_cast<float>(p_rect.top)/static_cast<float>(p_texture->getSize().y),

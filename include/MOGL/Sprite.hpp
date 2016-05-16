@@ -9,7 +9,7 @@ namespace mogl
 class Sprite : public Drawable
 {
 public:
-    Sprite(double width, double height, const sf::Texture* texture, const sf::IntRect& rect = sf::IntRect());
+    Sprite(const sf::Texture* texture, const sf::IntRect& rect = sf::IntRect());
 
     void init() override;
     void onDestroy() override;
@@ -28,8 +28,8 @@ public:
     static const char* behaviorName();
 
 protected:
-    GLuint p_VAO, p_VBO, p_position_loc, p_texture_coord_loc;
-    float p_width, p_height;
+    static GLuint s_VAO, s_VBO;
+    GLuint p_position_loc, p_texture_coord_loc;
     sf::Color p_color;
     const sf::Texture* p_texture;
     sf::IntRect p_rect;

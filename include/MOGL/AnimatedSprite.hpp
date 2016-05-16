@@ -17,7 +17,7 @@ class AnimatedSprite : public Sprite
 {
 public:
     enum class Status { PLAYING, PAUSED, STOPPED };
-    AnimatedSprite(double width, double height, const SpriteAnimation* animation);
+    AnimatedSprite(const SpriteAnimation* animation);
     const SpriteAnimation* spriteAnimation() const;
     void setSpriteAnimation(const SpriteAnimation* animation);
 

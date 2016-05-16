@@ -3,8 +3,8 @@
 
 namespace mogl
 {
-AnimatedSprite::AnimatedSprite(double width, double height, const SpriteAnimation* animation):
-Sprite(width, height, animation->texture),
+AnimatedSprite::AnimatedSprite(const SpriteAnimation* animation):
+Sprite(animation->texture),
 p_loop(true)
 {
     setSpriteAnimation(animation);
