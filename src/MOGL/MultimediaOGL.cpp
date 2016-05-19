@@ -1,4 +1,5 @@
 #include "MultimediaOGL.hpp"
+#include "glm.hpp"
 
 namespace mogl
 {
@@ -115,8 +116,9 @@ void MultimediaOGL::postUpdate()
         }
     }
 
-    glm::vec3 camera_normal = p_camera.getCenter() - p_camera.getPosition();
-    glm::vec4 camera_plane(camera_normal, -(glm::dot(camera_normal, p_camera.getPosition())));
+    glm::vec3 camera_position = humToGlm(p_camera.getPosition());
+    glm::vec3 camera_normal = humToGlm(p_camera.getCenter()) - camera_position;
+    glm::vec4 camera_plane(camera_normal, -(glm::dot(camera_normal, camera_position)));
 
     std::vector<DrawOrder_t> draw_order;
     for (Drawable* drawable : p_drawable_set)

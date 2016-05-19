@@ -6,7 +6,6 @@
 #include <SFML/Window.hpp>
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-#include "glm.hpp"
 #include "hummingbird/hum.hpp"
 #include "hummingbird/Plugin.hpp"
 #include "TextureManager.hpp"

@@ -3,12 +3,12 @@
 namespace mogl
 {
 Camera::Camera ():
-Camera(glm::ortho(0, 100, 0, 100), glm::vec3(0, 0, -1), glm::vec3(0, 0, 1),
-        glm::vec3(0, -1, 0), 0.1f, 1000.f)
+Camera(glm::ortho(0, 100, 0, 100), hum::Vector3f(0, 0, -1), hum::Vector3f(0, 0, 1),
+        hum::Vector3f(0, -1, 0), 0.1f, 1000.f)
 {}
 
-Camera::Camera (const glm::mat4& projection, const glm::vec3& position,
-        const glm::vec3& center, const glm::vec3& up,
+Camera::Camera (const glm::mat4& projection, const hum::Vector3f& position,
+        const hum::Vector3f& center, const hum::Vector3f& up,
         float z_near, float z_far):
 p_projection_changed(true),
 p_view_changed(true),
@@ -47,41 +47,40 @@ const glm::mat4& Camera::getView()
     if (p_view_changed)
     {
         p_view_changed = false;
-        p_view = glm::lookAt(p_position, p_center, p_up);
+        p_view = glm::lookAt(humToGlm(p_position), humToGlm(p_center), humToGlm(p_up));
     }
-
     return p_view;
 }
 
-void Camera::setPosition(const glm::vec3& position)
+void Camera::setPosition(const hum::Vector3f& position)
 {
     p_view_changed = true;
     p_position = position;
 }
 
-const glm::vec3& Camera::getPosition() const
+const hum::Vector3f& Camera::getPosition() const
 {
     return p_position;
 }
 
-void Camera::setCenter(const glm::vec3& center)
+void Camera::setCenter(const hum::Vector3f& center)
 {
     p_view_changed = true;
     p_center = center;
 }
 
-const glm::vec3& Camera::getCenter() const
+const hum::Vector3f& Camera::getCenter() const
 {
     return p_center;
 }
 
-void Camera::setUp(const glm::vec3& up)
+void Camera::setUp(const hum::Vector3f& up)
 {
     p_view_changed = true;
     p_up = up;
 }
 
-const glm::vec3& Camera::getUp() const
+const hum::Vector3f& Camera::getUp() const
 {
     return p_up;
 }

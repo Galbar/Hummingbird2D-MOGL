@@ -1,6 +1,5 @@
 #ifndef MOGL_SPRITE_HPP
 #define MOGL_SPRITE_HPP
-#include "glm/glm.hpp"
 #include <SFML/Graphics.hpp>
 #include "Drawable.hpp"
 

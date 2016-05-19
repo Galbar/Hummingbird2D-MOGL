@@ -3,7 +3,6 @@
 #include "AnimatedSprite.hpp"
 #include "Camera.hpp"
 #include "Drawable.hpp"
-#include "glm.hpp"
 #include "InputHandler.hpp"
 #include "Mesh.hpp"
 #include "Model.hpp"
