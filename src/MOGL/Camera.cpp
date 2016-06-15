@@ -5,7 +5,9 @@ namespace mogl
 Camera::Camera ():
 Camera(glm::ortho(0, 100, 0, 100), hum::Vector3f(0, 0, -1), hum::Vector3f(0, 0, 1),
         hum::Vector3f(0, -1, 0), 0.1f, 1000.f)
-{}
+{
+    p_is_ortho = true;
+}
 
 Camera::Camera (const glm::mat4& projection, const hum::Vector3f& position,
         const hum::Vector3f& center, const hum::Vector3f& up,
@@ -22,23 +24,36 @@ p_projection(projection)
 
 void Camera::setPerspective(float fovy, float aspect)
 {
-    setProjection(glm::perspective(fovy, aspect, p_z_near, p_z_far));
+    p_param1 = fovy;
+    p_param2 = aspect;
+    p_is_ortho = false;
+    p_projection_changed = true;
 }
 
 void Camera::setOrthogonal(float left, float right, float bottom, float top)
 {
-    setProjection(glm::ortho(left, right, bottom, top, p_z_near, p_z_far));
-}
-
-void Camera::setProjection(const glm::mat4& projection)
-{
+    p_param1 = left;
+    p_param2 = right;
+    p_param3 = bottom;
+    p_param4 = top;
+    p_is_ortho = true;
     p_projection_changed = true;
-    p_projection = projection;
 }
 
 const glm::mat4& Camera::getProjection()
 {
-    p_projection_changed = false;
+    if (p_projection_changed)
+    {
+        p_projection_changed = false;
+        if (p_is_ortho)
+        {
+            p_projection = glm::ortho(p_param1, p_param2, p_param3, p_param4, p_z_near, p_z_far);
+        }
+        else
+        {
+            p_projection = glm::perspective(p_param1, p_param2, p_z_near, p_z_far);
+        }
+    }
     return p_projection;
 }
 
@@ -87,7 +102,7 @@ const hum::Vector3f& Camera::getUp() const
 
 void Camera::setZNear(float z_near)
 {
-    p_view_changed = true;
+    p_projection_changed = true;
     p_z_near = z_near;
 }
 
@@ -98,7 +113,7 @@ float Camera::getZNear() const
 
 void Camera::setZFar(float z_far)
 {
-    p_view_changed = true;
+    p_projection_changed = true;
     p_z_far = z_far;
 }
 

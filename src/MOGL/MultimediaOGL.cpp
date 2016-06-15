@@ -218,6 +218,9 @@ void MultimediaOGL::addDrawable(Drawable* drawable)
         if (p_shader_program_usage.find(drawable->shaderProgram()) == p_shader_program_usage.end())
         {
             p_shader_program_usage.insert(std::make_pair(drawable->shaderProgram(), 0));
+            drawable->shaderProgram()->use();
+            drawable->shaderProgram()->setUniformMatrix4f("projection", p_camera.getProjection());
+            drawable->shaderProgram()->setUniformMatrix4f("view", p_camera.getView());
         }
 
         p_shader_program_usage[drawable->shaderProgram()] += 1;
