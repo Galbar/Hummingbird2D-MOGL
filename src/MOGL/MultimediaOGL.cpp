@@ -3,7 +3,7 @@
 
 namespace mogl
 {
-void defaultSpaceTransform(hum::Transformation& r)
+void defaultSpaceTransform(const hum::Game& game, hum::Transformation& r)
 {}
 
 MultimediaOGL::MultimediaOGL(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings):
@@ -141,7 +141,7 @@ void MultimediaOGL::postUpdate()
             delete actor_transform;
         }
 
-        p_space_transform(drawable_transform);
+        p_space_transform(game(), drawable_transform);
 
         double distance_from_camera = glm::dot(
                 camera_plane,

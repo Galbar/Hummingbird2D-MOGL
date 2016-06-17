@@ -14,7 +14,7 @@ SoundManager::~SoundManager()
     }
 }
 
-Sound_t SoundManager::play(const std::string& name, int volume, bool loop, bool relative_to_listener, const sf::Vector3f& position)
+SoundPair SoundManager::play(const std::string& name, int volume, bool loop, bool relative_to_listener, const sf::Vector3f& position)
 {
     SoundId sound_id = p_count++;
     unsigned int pos;

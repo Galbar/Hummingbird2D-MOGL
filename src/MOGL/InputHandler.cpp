@@ -2,7 +2,9 @@
 
 namespace mogl
 {
-InputHandler::InputHandler()
+InputHandler::InputHandler():
+p_current_mouse_info(0),
+p_previous_mouse_info(0)
 {
     p_mouse_wheel_scrolled = false;
     auto p = sf::Mouse::getPosition();
@@ -46,12 +48,12 @@ bool InputHandler::mouseMoved()
     return p_mouse_move_event;
 }
 
-const InputHandler::MousePosition& InputHandler::getMouseCurrentPosition()
+const hum::Vector2i& InputHandler::getMouseCurrentPosition()
 {
     return p_current_mouse_info;
 }
 
-const InputHandler::MousePosition& InputHandler::getMousePreviousPosition()
+const hum::Vector2i& InputHandler::getMousePreviousPosition()
 {
     return p_previous_mouse_info;
 }
@@ -196,9 +198,7 @@ bool InputHandler::mouseEvent(const sf::Event& event)
     else if (event.type == sf::Event::MouseMoved)
     {
         p_previous_mouse_info = p_current_mouse_info;
-        MousePosition mouse;
-        mouse.x = event.mouseMove.x;
-        mouse.y = event.mouseMove.y;
+        hum::Vector2i mouse(event.mouseMove.x, event.mouseMove.y);
         p_current_mouse_info = mouse;
         p_mouse_move_event = true;
         return true;

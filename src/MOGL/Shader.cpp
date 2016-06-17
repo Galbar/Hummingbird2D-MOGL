@@ -15,6 +15,10 @@ Shader::~Shader()
 
 void Shader::loadFromSource(const Shader::Type type, const std::string& source)
 {
+    if(p_shader_id != 0)
+    {
+        glDeleteShader(p_shader_id);
+    }
     const char *source_ptr = source.c_str();
     GLint status;
     char buffer[512];
@@ -42,6 +46,10 @@ void Shader::loadFromSource(const Shader::Type type, const std::string& source)
 
 bool Shader::loadFromFile(const Shader::Type type, const std::string& filename)
 {
+    if(p_shader_id != 0)
+    {
+        glDeleteShader(p_shader_id);
+    }
     std::string shader_source;
     if(!loadShaderSource(filename, shader_source))
     {

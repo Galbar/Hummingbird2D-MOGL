@@ -26,9 +26,7 @@ public:
     Camera ();
 
     /*!
-      \brief Constructor that allows to create a Camera with custom values.
-
-      Usage not recomended.
+      \brief Constructor that allows to create a Camera with custom values. (Internal use only).
      */
     Camera (const glm::mat4& projection, const hum::Vector3f& position,
             const hum::Vector3f& center, const hum::Vector3f& up,
@@ -48,7 +46,7 @@ public:
 
       The rectangle of the view is formed by the points:
       \code
-      (center - vec2(left, top))           (center + vec2(right, top))
+      (position - vec2(left, top))           (position + vec2(right, top))
              +----------------------------------------+
              |                                        |
              |                                        |
@@ -57,23 +55,85 @@ public:
              |                                        |
              |                                        |
              +----------------------------------------+
-      (center - vec2(left, bottom))        (center + vec2(right, bottom))
+      (position - vec2(left, bottom))        (position + vec2(right, bottom))
       \endcode
+
+      Where `position` is the position of the camera and the normal of the plane
+      is (center - position), where center is the point at which the camera is
+      looking at.
      */
     void setOrthogonal(float left, float right, float bottom, float top);
-    const glm::mat4& getProjection();
-    const glm::mat4& getView();
+
+    /*!
+      \brief Set the position of the camera.
+     */
     void setPosition(const hum::Vector3f& position);
+
+    /*!
+      \brief Get the position of the camera.
+     */
     const hum::Vector3f& getPosition() const;
+
+    /*!
+      \brief Set the center of the camera. (Where it is looking at).
+     */
     void setCenter(const hum::Vector3f& center);
+
+    /*!
+      \brief Get the center of the camera. (Where it is looking at).
+     */
     const hum::Vector3f& getCenter() const;
+
+    /*!
+      \brief Set the up vector of the camera.
+     */
     void setUp(const hum::Vector3f& up);
+
+    /*!
+      \brief Get the up vector of the camera.
+     */
     const hum::Vector3f& getUp() const;
+
+    /*!
+      \brief Set the Z near of the camera.
+     */
     void setZNear(float z_near);
+
+    /*!
+      \brief Get the Z near of the camera.
+     */
     float getZNear() const;
+
+    /*!
+      \brief Set the Z far of the camera.
+     */
     void setZFar(float z_far);
+
+    /*!
+      \brief Get the Z far of the camera.
+     */
     float getZFar() const;
+
+    /*!
+      \brief Get the projection matrix of the camera. (Internal use only).
+     */
+    const glm::mat4& getProjection();
+
+    /*!
+      \brief Get the view matrix of the camera. (Internal use only).
+     */
+    const glm::mat4& getView();
+
+    /*!
+      \brief Return whether the projection marix has changed since the last
+      getProjection(). (Internal use only).
+     */
     bool projectionChanged() const;
+
+    /*!
+      \brief Return whether the view marix has changed since the last
+      getView(). (Internal use only).
+     */
     bool viewChanged() const;
 
 private:
@@ -87,7 +147,7 @@ private:
 
 /*!
   \class mogl::Camera
-  \brief The Camera is the device through wich the player views the world.
+  \brief The Camera is the device through which the player views the world.
 
   It is used by MultimediaOGL to render the game world.
 */
