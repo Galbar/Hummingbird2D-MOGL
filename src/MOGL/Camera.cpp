@@ -3,23 +3,18 @@
 namespace mogl
 {
 Camera::Camera ():
-Camera(glm::ortho(0, 100, 0, 100), hum::Vector3f(0, 0, -1), hum::Vector3f(0, 0, 1),
-        hum::Vector3f(0, -1, 0), 0.1f, 1000.f)
-{
-    p_is_ortho = true;
-}
-
-Camera::Camera (const glm::mat4& projection, const hum::Vector3f& position,
-        const hum::Vector3f& center, const hum::Vector3f& up,
-        float z_near, float z_far):
 p_projection_changed(true),
 p_view_changed(true),
-p_z_near(z_near),
-p_z_far(z_far),
-p_position(position),
-p_center(center),
-p_up(up),
-p_projection(projection)
+p_z_near(0.1f),
+p_z_far(1000.f),
+p_param1(0),
+p_param2(-100),
+p_param3(100),
+p_param4(0),
+p_is_ortho(true),
+p_position(hum::Vector3f(0, 0, -1)),
+p_center(hum::Vector3f(0, 0, 1)),
+p_up(hum::Vector3f(0, 1, 0))
 {}
 
 void Camera::setPerspective(float fovy, float aspect)

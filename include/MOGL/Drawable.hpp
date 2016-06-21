@@ -87,7 +87,7 @@ public:
       This abstract method is to be implemented by derived classes to define
       how the Drawable must be drawn.
 
-      By the point where this method is called the ShaderProgram of the Drawable is being
+      By the point where this method is called, the ShaderProgram of the Drawable is being
       used and the _model_, _view_ and _projection_ uniform matrices are set.
      */
     virtual void draw() =0;

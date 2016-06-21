@@ -17,7 +17,7 @@ protected:
 
   Example:
   \code
-  mogl::TextureManger tm;
+  mogl::TextureManager tm;
   tm.load("cat", "path/to/cat.jpg");
   sf::Texture* cat = tm.get("cat");
 

@@ -49,13 +49,13 @@ void MultimediaOGL::gameStart()
     v_shader->loadFromSource(Shader::Type::VERTEX_SHADER,
 #include "../../shaders/plain.vert"
     );
-    hum::assert_msg(v_shader->isCompiled(), "Error compiling plain.vert\n" + v_shader->log());
+    hum::assert_msg(v_shader->isCompiled(), "Error compiling plain.vert\n", v_shader->log());
 
     f_shader = new Shader();
     f_shader->loadFromSource(Shader::Type::FRAGMENT_SHADER,
 #include "../../shaders/plain.frag"
     );
-    hum::assert_msg(f_shader->isCompiled(), "Error compiling plain.frag\n" + f_shader->log());
+    hum::assert_msg(f_shader->isCompiled(), "Error compiling plain.frag\n", f_shader->log());
 
     p_shader_program_manager->load("_mogl_plain", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
 
@@ -66,14 +66,14 @@ void MultimediaOGL::gameStart()
     v_shader->loadFromSource(Shader::Type::VERTEX_SHADER,
 #include "../../shaders/texture.vert"
     );
-    hum::assert_msg(v_shader->isCompiled(), "Error compiling plain.vert\n" + v_shader->log());
+    hum::assert_msg(v_shader->isCompiled(), "Error compiling plain.vert\n", v_shader->log());
 
 
     f_shader = new Shader();
     f_shader->loadFromSource(Shader::Type::FRAGMENT_SHADER,
 #include "../../shaders/texture.frag"
     );
-    hum::assert_msg(f_shader->isCompiled(), "Error compiling plain.frag\n" + f_shader->log());
+    hum::assert_msg(f_shader->isCompiled(), "Error compiling plain.frag\n", f_shader->log());
 
     p_shader_program_manager->load("_mogl_texture", ShaderProgramDef{*v_shader, *f_shader, "out_color"});
 

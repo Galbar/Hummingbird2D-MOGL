@@ -17,20 +17,13 @@ public:
       mogl::Camera cam;
       cam.setZNear(0.1f);
       cam.setZFar(1000.f);
-      cam.setOrthogonal(0, 100, 0, 100);
+      cam.setOrthogonal(0, -100, 100, 0);
       cam.setPosition(hum::Vector3f(0, 0, -1));
       cam.setCenter(hum::Vector3f(0, 0, 1));
       cam.setUp(hum::Vector3f(0, -1, 0));
       \endcode
      */
     Camera ();
-
-    /*!
-      \brief Constructor that allows to create a Camera with custom values. (Internal use only).
-     */
-    Camera (const glm::mat4& projection, const hum::Vector3f& position,
-            const hum::Vector3f& center, const hum::Vector3f& up,
-            float z_near, float z_far);
 
     /*!
       \brief Set the Camera to perspective projection.
@@ -125,13 +118,13 @@ public:
     const glm::mat4& getView();
 
     /*!
-      \brief Return whether the projection marix has changed since the last
+      \brief Return whether the projection matrix has changed since the last
       getProjection(). (Internal use only).
      */
     bool projectionChanged() const;
 
     /*!
-      \brief Return whether the view marix has changed since the last
+      \brief Return whether the view matrix has changed since the last
       getView(). (Internal use only).
      */
     bool viewChanged() const;
@@ -150,6 +143,11 @@ private:
   \brief The Camera is the device through which the player views the world.
 
   It is used by MultimediaOGL to render the game world.
+
+  By default the camera is set to be orthogonal. It is placed at the point (0, 0, -1)
+  and looks towards (0, 0, 1) with a viewport of 100 by 100. The (0, 0) is located at
+  the top left corner with the x-axis growing to the right and the y-axis growing
+  downwards.
 */
 }
 #endif

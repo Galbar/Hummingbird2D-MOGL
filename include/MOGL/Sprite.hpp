@@ -57,7 +57,10 @@ protected:
 
 /*!
   \class mogl::Sprite
-  \brief A textured rectangle-shaped Drawable
+  \brief A textured rectangle-shaped 1x1 Drawable
+
+  For different sizes use the scale in either the hum::Actor hum::Transform of
+  the Drawable's hum::Transform.
 */
 }
 #endif /* ifndef MOGL_RECTANGLE_HPP */

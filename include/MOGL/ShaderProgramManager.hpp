@@ -40,8 +40,7 @@ private:
   vs.loadFromFile(Shader::Type::VERTEX_SHADER, "shader.vert");
   if(!vs.isCompiled())
   {
-    hum::log_e("Vertex shader failed to compile:");
-    hum::log_e(vs.log());
+    hum::log_e("Vertex shader failed to compile: ", vs.log());
     return 1;
   }
 
@@ -49,8 +48,7 @@ private:
   fs.loadFromFile(Shader::Type::FRAGMENT_SHADER, "shader.frag");
   if(!fs.isCompiled())
   {
-    hum::log_e("Fragment shader failed to compile:");
-    hum::log_e(fs.log());
+    hum::log_e("Fragment shader failed to compile: ", fs.log());
     return 1;
   }
 

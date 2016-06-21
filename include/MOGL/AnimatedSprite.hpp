@@ -28,7 +28,7 @@ class AnimatedSprite : public Sprite
 public:
     /*!
       \enum Status
-      \brief The various statuses in which a AnimatedSprite can be regarding the
+      \brief The various statuses in which an AnimatedSprite can be regarding the
       playback of an animation.
      */
     enum class Status { PLAYING, PAUSED, STOPPED };
@@ -90,7 +90,10 @@ private:
 
 /*!
   \class mogl::AnimatedSprite
-  \brief A textured rectangle-shaped Drawable that changes over time.
+  \brief A textured rectangle-shaped 1x1 Drawable that changes over time.
+
+  For different sizes use the scale in either the hum::Actor hum::Transform of
+  the Drawable's hum::Transform.
 */
 }
 #endif
